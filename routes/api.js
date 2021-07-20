@@ -13,14 +13,19 @@ router.get('/stats', (req, res) => res.sendFile(path.join(__dirname, '../public/
 //GET WORKOUTS
 //Should return aggregate of workouts
 router.get('/api/workouts', (req, res) => {
-    Workout.find({})
-        .sort({day:-1})
-        .then(dbTransaction => {
-            res.json(dbTransaction);
-        })
-        .catch(err => {
-            res.status(400).json(err);
-        })
+    Workout.aggregate([
+        {
+            $addFields: {
+                totalDuration: { $sum: "$exercises.duration" }
+            },
+        },
+    ])
+    .then(dbTransaction => {
+        res.json(dbTransaction);
+    })
+    .catch(err => {
+        res.status(400).json(err);
+    })
 });
 
 //CREATE WORKOUT

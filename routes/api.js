@@ -10,16 +10,20 @@ router.get('/stats', (req, res) => res.sendFile(path.join(__dirname, '../public/
 
 //-----API ROUTES-----
 
+//GET WORKOUTS
+//Should return aggregate of workouts
 router.get('/api/workouts', (req, res) => {
     Workout.find({})
+        .sort({day:-1})
         .then(dbTransaction => {
             res.json(dbTransaction);
         })
         .catch(err => {
             res.status(400).json(err);
         })
-})
+});
 
+//CREATE WORKOUT
 router.post('/api/workouts', ({body},res) => {
     Workout.create(body)
         .then(dbTransaction => {
@@ -28,6 +32,21 @@ router.post('/api/workouts', ({body},res) => {
         .catch(err => {
             res.status(400).json(err);
         })
-})
+});
+
+//ADD EXERCISE
+router.put('/api/workouts/:id', (req, res) => {
+    Workout.findOneAndUpdate(
+        {_id: req.params.id},
+        {$push: { exercises: req.body } },
+        {new: true}
+    )
+    .then(dbTransaction => {
+        res.json(dbTransaction);
+    })
+    .catch(err => {
+        res.status(400).json(err);
+    })
+});
 
 module.exports = router;

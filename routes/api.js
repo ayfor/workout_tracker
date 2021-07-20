@@ -1,6 +1,11 @@
 const router = require("express").Router();
-//const Transaction = require("../models/transaction.js");
-//Import model here using syntax above
+const path = require("path");
+const Workout = require('../models/workout.js')
 
+//-----HOME ROUTES-----
+
+router.get('/', (req, res) => res.sendFile(path.join(__dirname, '../public/index.html')));
+router.get('/exercise', (req, res) => res.sendFile(path.join(__dirname, '../public/exercise.html')));
+router.get('/stats', (req, res) => res.sendFile(path.join(__dirname, '../public/stats.html')));
 
 module.exports = router;
